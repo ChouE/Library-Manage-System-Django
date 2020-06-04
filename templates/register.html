@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+     {% load static %} }
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/register.css">
+
+    <script src="/static/js/formflash.js" ></script>
+    <style>
+
+
+    </style>
+</head>
+<body class="html-container">
+    <div class="register-box">
+
+        <form method="post" class="form-wrapper" action="/registercheck/">
+        <div class="form-header">用户注册</div>
+            {% csrf_token %}
+           <input type="text" class="input-box act" value="{{ Account }}" name="AccountID" placeholder="用户名" required>
+                <p class="errmsg"> {{ ActERR }} </p>
+
+
+           <input type="password" class="input-box pwd" value="{{ pwd }}" name="Password" placeholder="密码" required>
+                  <p class="errmsg"> {{ PwdERR }}</p>
+
+            <input type="text" class="input-box Id"   value="{{ ID }}" name="ID" placeholder="工号/学号" required>
+
+                  <p class="errmsg"> {{ IdERR }}</p>
+
+
+            <input type="email" class="input-box eml"  value="{{ email }}" name="email" placeholder="邮箱" required>
+
+                 <p class="errmsg"> {{ EmailERR }}</p>
+
+           <input type="text"  class="input-box phone"   value="{{ phone }}" name="Phone" placeholder="手机号" required>
+
+               <p class="errmsg"> {{ PhoneERR }}</p>
+            <input type="password"  class="input-box key"   value="{{ key }}" name="Key" placeholder="管理员注册码">
+
+               <p class="errmsg key"> {{ KeyERR }}</p>
+            <br/>
+            <div class="line">
+
+            <div class="radio">
+            <input type="radio" name="type" value="2" id="2" > <label  class="radio-label"  for="1">学生</label>
+            </div>
+            <br />
+            <div class="radio">
+            <input type="radio" name="type" value="1" id="1" > <label  class="radio-label" for="0">管理员</label>
+            </div>
+            </div>
+
+            <input type="submit" class="btn" value="注册">
+            <div class="msg">已有账号？<a href="/">返回</a>
+            </div>
+
+        </form>
+
+    </div>
+<script>
+         $(document).ready(function () {
+            let noAct = "{{ ActERR }}";
+            let pwdErr = "{{ PwdERR }}";
+            let IdERR = "{{ IdERR }}";
+            let EmailERR = "{{ EmailERR }}";
+            let PhoneERR = "{{ PhoneERR }}";
+            let Key = "{{ KeyERR }}"
+
+             if (Key !== "")
+                 flash(".key",8,10,100);
+
+            if (noAct !== "")
+                flash(".act",8,10,100);
+            if (pwdErr !== "")
+                flash(".pwd",8,10,100);
+            if (IdERR !== "")
+                flash(".Id", 8, 10, 100);
+             if (EmailERR !== "")
+                flash(".eml",8,10,100);
+             if (PhoneERR !== "")
+                flash(".phone",8,10,100);
+            $('.carousel').carousel({
+              interval: 5000
+            })
+
+            $('.btn').click(function () {
+                flash(this,8,10,100);
+            })
+            $('input[name="type"]').click(function () {
+                   let value=$('input[name="type"]:checked').val()
+                    if(value == '1'){
+                        $(".key").show()
+                    }else{
+                        $(".key").hide()
+                    }
+
+             })
+             {% if checkedM %}
+                 $(':radio[name="type"][value="1"]').prop("checked", "checked");
+             {% else %}
+                  $(".key").hide();
+                 $(':radio[name="type"][value="2"]').prop("checked", "checked");
+             {% endif %} 
+        });
+    </script>
+</body>
+</html>

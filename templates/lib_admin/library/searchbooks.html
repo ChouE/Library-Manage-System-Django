@@ -1,0 +1,199 @@
+{%  extends 'model/adminbase.html' %}
+{% block title %}
+图书检索
+{% endblock %}
+<!--样式-->
+{% block StyleSheet %}
+ <link rel="stylesheet" href="/static/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
+    <style>
+        .selection{
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+{#    表格元素#}
+
+   <script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script>
+     $(function () {
+            $("#example1").DataTable({"language": {"url": "/static/plugins/datatables/Chinese.json"},
+                "language": {"url": "/static/plugins/datatables/Chinese.json"},
+                "language": {"url": "/static/plugins/datatables/Chinese.json"}})
+            $('#example2').DataTable({"language":
+                    {"url": "/static/plugins/datatables/Chinese.json"},
+                "language": {"url": "/static/plugins/datatables/Chinese.json"},
+              "paging": true,
+              "lengthChange": false,
+              "searching": false,
+              "ordering": true,
+              "info": true,
+              "autoWidth": false,
+            });
+            var isBorrow = [];
+              {% for book in books %}
+                     $("#add{{ book.BookID  }}").click(function () {
+
+                     $.ajax({
+                    url : "/book_operation/",    //提交URL
+                    type : "GET",//处理方式
+                    data : {op:"add" ,id:{{ book.BookID }}},//提交的数据
+                    success : function (data) {
+
+                         if (data === "err" || data === "no"){
+                            alert("入库失败！");
+                         }else {
+
+                              json_data = data;
+                             $("#numlib{{ book.BookID  }}").html(json_data.NumInLib);
+                             $("#num{{ book.BookID  }}").html(json_data.NumNow);
+                         }
+                    },//执行成功后的回调函
+                    error : function() {
+                        alert("入库失败！")
+                    }
+                     })
+                 })
+
+                  $("#cut{{ book.BookID  }}").click(function () {
+
+                     $.ajax({
+                    url : "/book_operation/",    //提交URL
+                    type : "GET",//处理方式
+                    data : {op:"cut" ,id:{{ book.BookID }}},//提交的数据
+                    success : function (data) {
+                         if (data === "err" || data === "no"){
+                            alert("出库失败！");
+                         }else {
+                             json_data = data;
+                             $("#numlib{{ book.BookID  }}").html(json_data.NumInLib);
+                             $("#num{{ book.BookID  }}").html(json_data.NumNow);
+                         }
+                    },//执行成功后的回调函
+                    error : function() {
+                        alert("出库失败！")
+                    }
+                     })
+                 })
+
+                  $("#delete{{ book.BookID  }}").click(function () {
+
+                     $.ajax({
+                    url : "/book_operation/",    //提交URL
+                    type : "GET",//处理方式
+                    data : {op:"delete" ,id:{{ book.BookID }}},//提交的数据
+                    success : function (data) {
+                         if (data === "err" ){
+                            alert("删除失败！还有图书在借无法删除！");
+                         }else if(data === "ok"){
+                             $("#bk{{ book.BookID }}").hide();
+                         }
+                    },//执行成功后的回调函
+                    error : function() {
+                        alert("删除失败！")
+                    }
+                     })
+                 })
+              {% endfor %}
+             $(".selection").click(function () {
+            var text = $(this).text()
+            $("#selected").text(text)
+            $("#searchtype").attr("value",text)
+
+        })
+
+     })
+    </script>
+{% endblock %}
+{% block content %}
+     <div class="row search-box" style="margin-top: 0px">
+                <!-- 主搜索框 -->
+            <form class="form-inline  m-auto" action="/admin_searchresult/" method="POST">
+                {% csrf_token %}
+             <div class="input-group input-group-lg mb-3">
+                  <div class="input-group-prepend">
+                    <button type="button" id="selected" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                      {{ type }}
+                    </button>
+                    <ul class="dropdown-menu" style="">
+                        <li class="dropdown-item"><div class="nav-link selection" >全部</div></li>
+                      <li class="dropdown-item"><div class="nav-link selection" >书号</div></li>
+                      <li class="dropdown-item"><div class="nav-link selection" >书名</div></li>
+                      <li class="dropdown-item"><div class="nav-link selection" >作者</div></li>
+                      <li class="dropdown-item"><div class="nav-link selection" >出版社</div></li>
+                           <li class="dropdown-item"><div class="nav-link selection" >分类</div></li>
+
+                    </ul>
+                  </div>
+                  <!-- /btn-group -->
+                 <input type="text" id="searchtype" name="type" value="{{ type }}" hidden>
+                  <input type="text" name="keyword" value="{{ keyword }}" class="form-control" placeholder="搜索图书">
+                 <span class="input-group-append">
+                    <button type="submit" class="btn gradient-color-ver" style="color: white">搜索</button>
+                  </span>
+                </div>
+
+            </form>
+        </div>
+          <div class="row">
+        <div class="col-12">
+
+          <!-- /.card -->
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">图书检索结果 </h3>
+                {% if keyword %}
+                  &nbsp;&nbsp;&nbsp;&nbsp;查询关键词：  {{ keyword }}
+                {% endif %}
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>编号</th>
+                  <th>书名</th>
+                  <th>作者</th>
+                  <th>出版社</th>
+                  <th>分类</th>
+                    <th>出版时间</th>
+                  <th>价格</th>
+                    <th>在架数量</th>
+                    <th>馆藏数</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                <tr id="bk{{ book.BookID }}" >
+                  <td>{{ book.BookID }}</td>
+                  <td><a id="book{{ book.BookID  }}" href="{% url 'admin_bookdetail' book.BookID %}">{{ book.BName }}</a></td>
+                    <td>{{ book.Author }}</td>
+                    <td>{{ book.Publisher }}</td>
+                    <td>{{ book.get_Category_display }}</td>
+                    <td>{{ book.PubTime }}</td>
+                    <td>{{ book.Price }}</td>
+                     <td id="num{{ book.BookID  }}">{{ book.NumNow}}</td>
+                    <td id="numlib{{ book.BookID  }}">{{ book.NumInLib}}</td>
+
+                    <td >
+                        <button id="add{{ book.BookID  }}" type="button"  class="btn"> <i class="fa fa-plus-circle" style="color: #66afe9"></i></button>
+                        <button id="cut{{ book.BookID  }}" type="button"  class="btn"> <i class="fa fa-minus-circle" style="color: #ef5b9c"></i></button>
+                        <button id="delete{{ book.BookID  }}" type="button"  class="btn"> <i class="fa fa-trash" style="color: #ef3c50"></i></button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+{% endblock %}

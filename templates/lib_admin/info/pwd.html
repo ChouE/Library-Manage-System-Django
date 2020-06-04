@@ -1,0 +1,59 @@
+{% extends "model/adminbase.html" %}
+{% block title %}
+修改密码
+{% endblock %}
+{% block script %}
+    <script>
+    window.onload = function () {
+         if("{{ work }}" === "work"){
+             setTimeout(function () {
+                    alert("修改成功");
+             },200)
+         }
+
+    }
+ </script>
+{% endblock %}
+{% block contentHeader %}
+    修改密码
+{%  endblock %}
+{% block content %}
+        <div class="row">
+                 <!-- 表格框 -->
+            <div class="card card-primary  m-auto ">
+              <div class="card-header gradient-color-ver">
+                <h3 class="card-title">密码修改</h3>
+              </div>
+
+              <!-- 表单开始-->
+              <form role="form" method="post" action="/admin_checkpwd/" class="pwd-form">
+                  {% csrf_token %}
+
+                <div class="card-body">
+                 <div class="form-group">
+                    <label for="InputPassword1">原密码</label>
+                     <input type="password" class="form-control" value="{{ oldpwd }}" required name="old_pwd" id="InputPassword1" placeholder="Password">
+                    <span id="terms-error" class="error invalid-feedback"  style="display: inline;">{{ pwderr }}</span>
+                 </div>
+                  <div class="form-group">
+                    <label for="InputPassword2">新密码</label>
+                    <input type="password" class="form-control" name="new_pwd" value="{{ newpwd }}" required id="InputPassword2" placeholder="Password">
+                     <span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ newpwderr }}</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="InputPassword3">重复新密码</label>
+                    <input type="password" class="form-control" name="renew_pwd" value="{{ renewpwd }}" id="InputPassword3" placeholder="Password">
+                     <span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ renewpwderr }}</span>
+                  </div>
+
+                </div>
+
+
+                <div class="card-footer row">
+                  <button type="submit" id="pwd-smt"  class="btn btn-primary m-auto pwd-smt-bnt">提交</button>
+                </div>
+              </form>
+            </div>
+            </div>
+
+{% endblock %}

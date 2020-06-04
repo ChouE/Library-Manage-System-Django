@@ -1,0 +1,82 @@
+{% extends "model/base.html" %}
+{% block title %}
+    申请读者级别变更
+{%  endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            // 初始化 select组件样式
+
+            $('.select3').select2()
+            $('.select2bs4').select2({
+              theme: 'bootstrap4'
+            })
+
+            // 申请已发送
+            if("{{ work }}" === "work"){
+             setTimeout(function () {
+                    alert("申请已发送");
+             },200)
+            }
+            //撤销请求的ajax
+            $('#resetApply').click(function () {
+                $.ajax({
+                    url:"/resetApply/",
+                    type:"GET",
+                    data: {apply:"ok"},
+                    success:function (data) {
+                        alert(data)
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}
+{% block content %}
+    <form action="/applyclass/" method="POST">
+
+    {% csrf_token %}
+      <!-- Input addon -->
+            <div class="card card-info " style="margin-top: -20px">
+              <div class="card-header  gradient-color-her">
+                <h3 class="font-weight-light" style="color: #0b2e13">申请读者级别变更</h3>
+              </div>
+              <div class="card-body">
+                  <span id="terms-error" class="warning invalid-feedback" style="display: inline;">注：提交申请之后，管理员会在三个工作日内回复，重复提交后，最新的申请会覆盖之前的申请</span>
+
+                  <div > <!--排版整个表单的row-->
+                     <div class="form-group">
+                         <label for="{{ form.ReaderID.id_for_label }}">读者号:</label>
+                         {{ form.ReaderID }}
+                         <span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ form.ReaderID.errors }}</span>
+
+                     </div>
+                      <div class="form-group">
+                          <label for="{{ form.Class.id_for_label }}">申请级别:</label>
+                          {{ form.Class }}
+                          <span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ form.Class.errors }}</span>
+
+                      </div>
+                      <div class="form-group">
+                          <label for="{{ form.Message.id_for_label }}">备注信息/申请理由:</label>
+                          {{ form.Message }}
+                          <span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ form.Message.errors }}</span>
+
+                      </div>
+
+
+                  </div>
+                  <!--提交按钮-->
+                <div class="card-footer row " style="background-color: white">
+                  <button type="submit" id="pwd-smt"  class="btn btn-primary  offset-lg-0  pwd-smt-bnt">申请</button>
+                    {% if resetApply %}
+                    <button type="button" id="resetApply"  class="btn btn-primary  offset-lg-6 pwd-smt-bnt" style="background-color: #b92c28">撤销原先申请</button>
+                    {% endif %}
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+     </form>
+{% endblock %}

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/fontawesome-free/css/all.min.css">
+    {% block StyleSheet %}
+    {% endblock %}
+{#    <!-- Ionicons -->#}
+{#   <link rel="stylesheet" href="https://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">#}
+{#  <!-- daterange picker -->#}
+  <link rel="stylesheet" href="/static/plugins/daterangepicker/daterangepicker.css">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="/static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" href="/static/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+  <link rel="stylesheet" href="/static/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/static/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Bootstrap4 Duallistbox -->
+  <link rel="stylesheet" href="/static/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+  <!-- 主题样式 -->
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+  <!-- 谷歌字体: Source Sans Pro -->
+  <link href="/static/dist/css/google.css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <title>{% block title %}My amazing site{% endblock %}</title>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<!-- 头部导航 -->
+  <nav class="main-header navbar navbar-expand gradient-color-her navbar-light">
+    <!-- 头部左侧导航-->
+    <ul class="navbar-nav">
+      <li class="nav-item hoverColor">
+        <a class="nav-link" data-widget="pushmenu" id="Menu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block hoverColor">
+        <a href="/readerindex/" class="nav-link">主页</a>
+      </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <img src="/static/img/横.png" class="logo-top " alt="校徽" >
+
+        </li>
+    </ul>
+
+
+
+    <!-- 头部右侧导航 -->
+    <ul class="navbar-nav ml-auto">
+      <!-- 消息按钮 -->
+      <li class="nav-item dropdown hoverColor">
+          {% block mes %}
+        <a class="nav-link" data-toggle="dropdown" href="#" id="MesBtn">
+          <i class="far fa-comments" style="color: #007d65"></i>
+            <span class="badge badge-danger navbar-badge" id="mesnum"></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="MesBox">
+            <div id="Mes">
+
+            </div>
+        </div>
+        {%  endblock %}
+      </li>
+      <!-- 登出按钮 -->
+      <li class="nav-item dropdown hoverColor">
+            <a class="nav-link" href="#" id="login-out" role="button"><i
+            class="fa fa-sign-out-alt" style="color: #b92c28"></i></a>
+      </li>
+        <!--显示已选择图书-->
+      <li class="nav-item hoverColor">
+        <a class="nav-link" data-widget="control-sidebar" id="getbooks" data-slide="true" href="#" role="button"><i
+            class="fas fa-th-large" style="color: #009ad6"></i></a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.顶部导航结束 -->
+<!-- 左侧导航容器 -->
+  <aside class="main-sidebar sidebar-light-primary gradient-color-ver elevation-4 radius">
+    <!-- 图标logo -->
+    <a href="#" class="brand-link">
+      <img src="/static/img/同济.png" alt="Logo" class="logo-buct elevation-1">
+      <span class="brand-text  font-weight-light logo-text">图书馆借阅系统</span>
+    </a>
+
+    <!-- 按钮列表 -->
+    <div class="sidebar">
+      <!-- 用户头像 -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="/static/img/icons/avatar_user.jpg" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block margin-left-name font-weight-light user-name-font">{{ LoginUser.Name }}</a>
+        </div>
+      </div>
+
+      <!-- 按钮菜单 -->
+      <nav class="mt-2">
+          <!--父列表 -->
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+
+          <li class="nav-item has-treeview  {{ OpenLib }}  {{ LibState }}"> <!--menu-open表示列表打开-->
+            <a href="#" class="nav-link"><!--active表示被选中的网页-->
+              <i class="nav-icon fas fa-bank" style="color: #509517;"></i>
+              <p>
+                馆藏书籍
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview ">
+              <li class="nav-item">
+                <a href="{% url 'searchbooks' %}" class="nav-link {{ SearchState }}"> <!--active表示被选中的网页-->
+                  <i class="far fa-circle  nav-icon"></i>
+                  <p>书籍查询</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a href="/todaycommend/" class="nav-link {{ RecState }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>书籍推荐</p>
+                </a>
+              </li>
+                <li class="nav-item ">
+                <a href="/todaylib/" class="nav-link {{ dataState }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>图书馆借阅统计</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview {{ OpenBr }} {{ BrState }}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-book-reader " style="color: #ba5ffc"></i>
+              <p>
+                借阅查询
+           <!--     <span class="right badge badge-danger">New</span> -->
+                   <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+              <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                        <a class="nav-link {{ CheckState }}" href="{% url 'checking' %}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>借阅审核</p>
+                        </a>
+                  </li>
+                   <li class="nav-item">
+                        <a class="nav-link {{ NotRState }}" href="/notreturn/">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>未归还</p>
+                        </a>
+                  </li>
+                   <li class="nav-item">
+                        <a class="nav-link {{ RState }}" href="/returned/">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>已归还</p>
+                        </a>
+                  </li>
+                   <li class="nav-item">
+                        <a class="nav-link {{ IllegalState }}" href="/illegal/">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>违规记录</p>
+                        </a>
+                  </li>
+              </ul>
+          </li>
+          <li class="nav-item has-treeview {{ OpenInf }} {{ InfState}}">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fa fa-address-card" style="color: #6bbbdc"></i>
+          <p>
+            个人信息
+               <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+          <ul class="nav nav-treeview">
+              <li class="nav-item">
+                    <a class="nav-link {{ mdfInfState }}" href="/infomdf/">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>修改信息</p>
+                    </a>
+              </li>
+               <li class="nav-item">
+                    <a class="nav-link {{ mdfpwdState }}" href="/pwdmdf/">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>修改密码</p>
+                    </a>
+              </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ applyState }}" href="/applyclass/">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>申请变更读者等级</p>
+                    </a>
+              </li>
+
+          </ul>
+      </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.菜单栏结束-->
+    </div>
+
+    <!-- /.左侧菜单栏结束 -->
+  </aside>
+
+  <!-- 内容容器. 包含界面内容 -->
+  <div class="content-wrapper backgroundImage">
+    <!-- 标题 -->
+    <section class="content-header">
+      <div class="container-fluid">
+
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark font-weight-light">
+                {% block contentHeader %}
+                {% endblock %}</h1>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+
+
+      </div>
+    </section>
+
+       <section class="content">
+          <div class="container-fluid">
+                 {% block content %}
+                 {% endblock %}
+          </div>
+       </section>
+
+    </div>
+    <!-- /.标题-->
+
+
+    <!-- /.content -->
+  </div>
+  <!-- /.内容容器 -->
+
+  <!-- 右部控制面板 -->
+  <aside class="control-sidebar control-sidebar-dark elevation-4"  id="right-control" style="width: 300px"  >
+    <!-- 右部控制面板 快速显示未审核的书籍-->
+    <div class="p-3" style="overflow-y: scroll;max-height: 100%;">
+      <h5 style="margin-bottom:20px ">未审核借阅书籍</h5>
+      <div id="nullborrow" style="margin: 10px 0px 10px">
+
+      </div>
+        <h5 style="margin-bottom:20px ">在借书籍</h5>
+        <div id="allowborrow" style="margin: 10px 0px 10px">
+
+        </div>
+    </div>
+  </aside>
+  <!-- /.右部控制面板 -->
+
+
+  <!-- 底部内容 -->
+  <footer class="main-footer" >
+    <!-- 左侧 -->
+    <div class="float-right d-none d-sm-inline" >
+      EEEEE
+    </div>
+    <!-- Default to the left -->
+    <strong class="font-weight-light">Copyright &copy; 2000-2020 <a href = "https://github.com/ChouE">ChouEV</a>工作室　中国 上海 powered by <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+  </footer>
+
+<!-- ./wrapper -->
+<!--JS导入-->
+<!-- jQuery -->
+<script src="/static/jquery/jquery.min.js"></script>
+<script>
+    window.onload = function () {
+        document.getElementById("login-out").onclick = function () {
+            window.location.href = "/loginout/";
+        }
+
+        const bottom_message = `<a href="#" class="dropdown-item dropdown-footer" id="clearMes">标记所有信息为已读</a>`
+
+        $("#MesBtn").click(function () {
+            if($("#MesBox").is(":hidden")){
+                $("#Mes").html("")
+                $.ajax({
+                    url : "/getmessage/",    //提交URL
+                    type : "GET",//处理方式
+                    data : {way:"get"},//提交的数据
+                    success : function (data) {
+                        if (data.length > 0){
+                            for(let i of data){
+                                $("#Mes").append(`
+                                    <a href="#" class="dropdown-item">
+                                    <div class="media">
+                                    <img src="/static/img/icons/avatar_user.jpg" alt="用户头像" class="img-size-50 img-circle mr-3">
+                                     <div class="media-body">
+                                        <h3 class="dropdown-item-title">
+                                          ${i.Title}
+                                          <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                        </h3>
+                                        <p class="text-sm">${i.Content}</p>
+                                        <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> ${i.MTime}</p>
+                                      </div>
+                                    </div>
+                                  </a>
+                                  <div class="dropdown-divider"></div>`)
+                            }
+                        }else {
+                             $("#Mes").append(`
+                                    <a href="#" class="dropdown-item">
+                                    <div class="media">
+                                     <div class="media-body">
+                                        <h3 class="dropdown-item-title">
+                                            全部消息已读
+                                          <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                        </h3>
+                                        </div>
+                                    </div>
+                                  </a>
+                                  <div class="dropdown-divider"></div>`)
+                        }
+                         $("#Mes").append(bottom_message)
+                        $("#clearMes").click(function () {
+                             $.ajax({
+                                    url : "/getmessage/",    //提交URL
+                                    type : "GET",//处理方式
+                                    data : {way:"reset"},//提交的数据
+                                    success : function (data) {
+                                         if (data === "ok"){
+                                            $("#Mes").html(bottom_message)
+                                              $("#mesnum").hide()
+                                         }
+                                    },//执行成功后的回调函
+                                    error : function() {
+                                        alert("请求失败！")
+                                    }
+                                    })
+                            })
+                    },//执行成功后的回调函
+                    error : function() {
+                        alert("请求失败！")
+                    }
+                })
+            }
+        })
+
+        $("#getbooks").click(function () {
+            if($("#right-control").is(":hidden")){
+                $("#nullborrow").html("");
+                $("#allowborrow").html("");
+                $.ajax({
+                    url: "/getborrow/",
+                    type: "GET",
+                    data:{way:"get"},
+                    success:function (data) {
+
+                        for(let i = 0; i < data.allowbooks.length; i++){
+                            $("#allowborrow").append(`
+                            <div id="allow${i}" class="row " style="margin-top: 10px;margin-bottom: 10px;border-radius: 15px">
+                                    <div class="col-sm-12" style="text-align:center; background-color: #33a3dc; padding: 10px; border-radius: 15px;" >
+                                            <h6 >书名:${data.allowbooks[i].BName}</h6>
+                                            <h6 >作者:${data.allowbooks[i].Author}</h6>
+                                            <h6 >出版社:${data.allowbooks[i].Publisher}</h6>
+                                    </div>
+
+                            </div>
+                            `);
+                        }
+                            for(let i = 0; i < data.nullbooks.length; i++){
+                            $("#nullborrow").append(`
+                            <div id="null${i}" class="row " style="margin-top: 10px;margin-bottom: 10px;border-radius: 15px">
+                                    <div class="col-sm-9" style="background-color: #50b8c1; padding: 10px; border-bottom-left-radius: 15px;border-top-left-radius: 15px" >
+                                            <h6 >书名:${data.nullbooks[i].BName}</h6>
+                                            <h6 >作者:${data.nullbooks[i].Author}</h6>
+                                            <h6 >出版社:${data.nullbooks[i].Publisher}</h6>
+                                    </div>
+                                    <div class="col-sm-3" id="nullbook${data.nullbooks[i].id}" style="border-bottom-right-radius: 15px;border-top-right-radius: 15px;background-color:#f391a9;cursor: pointer;">
+                                            <h5 class="font-weight-bold" style="margin-top: 70%" >撤销</h5>
+                                    </div>
+                            </div>
+                            `);
+                            $(`#nullbook${data.nullbooks[i].id}`).click(function () {
+                                    let id = data.nullbooks[i].id;
+
+                                    $.ajax ({
+                                        url: "/getborrow/",
+                                        type: "GET",
+                                        data:{way:"reset",id:id},
+                                        success:function () {
+                                            $(`#null${i}`).hide({
+                                                duration:400
+                                            });
+                                        },
+                                        error:function () {
+                                            alert("撤销失败");
+                                        }
+                                    })
+                            })
+                        }
+
+                    },
+                    error:function () {
+                        alert("请求失败！")
+                    }
+                })
+            }
+        })
+
+        $.ajax({
+            url: "/getmesnum/",
+            type: "GET",
+            data:{way:"get"},
+            success:function (num) {
+
+                if (num === "0" || num === 'no'){
+                    $("#mesnum").hide()
+                }else{
+                    $("#mesnum").text(num)
+                }
+            }
+        })
+
+    }
+</script>
+{% block script %}
+{% endblock %}
+{% block moreJSLib %}
+{% endblock %}
+<!-- Bootstrap 4 -->
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- 主题样式 -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+
+<!-- Select2 -->
+<script src="/static/plugins/select2/js/select2.full.min.js"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="/static/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<!-- InputMask -->
+<script src="/static/plugins/moment/moment.min.js"></script>
+<script src="/static/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+<!-- date-range-picker -->
+<script src="/static/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap color picker -->
+<script src="/static/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="/static/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Bootstrap Switch -->
+<script src="/static/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+
+<!-- AdminLTE for demo purposes -->
+
+</body>
+</html>
