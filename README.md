@@ -1,5 +1,6 @@
 # Library-Manage-System-Django
-a library management system for tongji university built with django and mysql
+![GitHub repo size](https://img.shields.io/github/repo-size/ChouE/Library-Manage-System-Django?style=for-the-badge)  
+A library management system for tongji university built with django and mysql
 
 学习Django
 
